@@ -63,8 +63,9 @@ fn puzzle01_part2(reader: &mut io::BufReader<File>) -> Result<u64, Error> {
 
         // Find the first and last digit in the line
         if let Some((first_digit, last_digit)) = find_first_and_last_digit_including_spelled_out(&line) {
-            println!("Line: {}", line);
-            println!("First digit: {}, Last digit: {}", first_digit, last_digit);
+            // use for debugging
+            //println!("Line: {}", line);
+            //println!("First digit: {}, Last digit: {}", first_digit, last_digit);
             sum += first_digit * 10 + last_digit;
         }        
     }
@@ -92,12 +93,12 @@ fn find_digit_in_str(s: &str, digit_strings: &[(&str, u64)], is_first: bool) -> 
     while current_pos < s.len() {
         let remaining = &s[current_pos..];
 
-        if let Some((digit_value, len)) = find_digit_or_string(remaining, digit_strings) {
+        if let Some(digit_value) = find_digit_or_string(remaining, digit_strings) {
             if is_first {
                 return Some(digit_value);
             } else {
                 last_found_digit = Some(digit_value);
-                current_pos += len;
+                current_pos += 1;
             }
         } else {
             current_pos += 1;
@@ -107,20 +108,20 @@ fn find_digit_in_str(s: &str, digit_strings: &[(&str, u64)], is_first: bool) -> 
     last_found_digit
 }
 
-fn find_digit_or_string(s: &str, digit_strings: &[(&str, u64)]) -> Option<(u64, usize)> {
+fn find_digit_or_string(s: &str, digit_strings: &[(&str, u64)]) -> Option<u64> {
     if s.is_empty() {
         return None;
     }
 
     if let Some(c) = s.chars().next() {
         if c.is_digit(10) {
-            return Some((c.to_digit(10).unwrap() as u64, 1));
+            return Some(c.to_digit(10).unwrap() as u64);
         }
     }
 
     for &(word, value) in digit_strings {
         if s.starts_with(word) {
-            return Some((value, word.len()));
+            return Some(value);
         }
     }
 

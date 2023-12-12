@@ -1,7 +1,5 @@
 use std::{env, fs::File, path::Path, io::{self, Error, Seek, SeekFrom, BufRead}, collections::HashMap};
 
-// TODO: Result for input.txt is "3472" at the moment which is too high
-
 fn main() -> io::Result<()>{
     // Check if text file was given
     let args: Vec<String> = env::args().collect();
@@ -33,8 +31,8 @@ fn puzzle02_part1(reader: &mut io::BufReader<File>) -> Result<u64, Error> {
                 let mut too_many = false;
                 for map_entry in color_counts {
                     let red_count = map_entry.get("red").unwrap_or(&0);
-                    let green_count = map_entry.get("red").unwrap_or(&0);
-                    let blue_count = map_entry.get("red").unwrap_or(&0);
+                    let green_count = map_entry.get("green").unwrap_or(&0);
+                    let blue_count = map_entry.get("blue").unwrap_or(&0);
                    
                     if (red_count > &12) || (green_count > &13) || (blue_count > &14) {
                         too_many = true;

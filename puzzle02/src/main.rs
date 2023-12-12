@@ -1,4 +1,4 @@
-use std::{env, fs::File, path::Path, io::{self, Error, Seek, SeekFrom, BufRead}, collections::HashMap};
+use std::{env, fs::File, path::Path, io::{self, Error, Seek, SeekFrom, BufRead}, collections::HashMap, cmp::max};
 
 fn main() -> io::Result<()>{
     // Check if text file was given
@@ -82,5 +82,34 @@ fn parse_game_data(input: &str) -> Result<(u64, Vec<HashMap<String, u32>>), Stri
 }
 
 fn puzzle02_part2(reader: &mut io::BufReader<File>) -> Result<u64, Error> {
-    Ok(0)
+    let mut sum = 0u64;
+
+    for line in reader.lines() {
+        let line = line?;
+
+        match parse_game_data(&line) {
+            Ok((_, color_counts)) => {
+                let mut max_red = 0u64;
+                let mut max_green = 0u64;
+                let mut max_blue = 0u64;
+                for map_entry in color_counts {
+                    let red_count = *map_entry.get("red").unwrap_or(&0) as u64;
+                    let green_count = *map_entry.get("green").unwrap_or(&0) as u64;
+                    let blue_count = *map_entry.get("blue").unwrap_or(&0) as u64;
+                   
+                    max_red = max(red_count as u64, max_red);
+                    max_green = max(green_count as u64, max_green);
+                    max_blue = max(blue_count as u64, max_blue);
+                }
+
+                sum += max_red * max_green * max_blue;
+            },
+            Err(e) => {
+                println!("Parsing error: {e}");
+                println!("Line: {line}");
+            }
+        }
+    }
+    
+    Ok(sum)
 }
